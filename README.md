@@ -1,1 +1,2 @@
-# RMD_Project1_Stroke-Prediction
+# RMD Project1 Stroke Prediction
+For this project, we are using a dataset from Kaggle to predict the risk of a stroke in patients.The task is to use a training set to learn and use that knowledge to predict the risk in a testing set. Before the prediction we will do an exploratory data analysis to understand more about the data and finally we will use Random forest Algorithm to predict the outcome.
