@@ -1,0 +1,103 @@
+---
+title: "Stroke Prediction"
+author: "Irishi"
+output: html_document
+date: "2022-09-29"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Prediction of Stroke in Patients using Random Forest Algorithm
+For this project, we are using a dataset from Kaggle to predict the risk of a stroke in patients.The task is to use a training set to learn and use that knowledge to predict the risk in a testing set. Before the prediction we will do an exploratory data analysis to understand more about the data and finally we will use Random forest Algorithm to predict the outcome.
+
+### Loading Libraries
+```{r lib,message=FALSE}
+library(tidyverse)
+library(caret)
+library(randomForest)
+library(skimr)
+library(ggplot2)
+```
+
+### Read Data
+
+```{r read}
+df_stroke<-read.csv("C:\\Users\\irish\\Downloads\\archive\\healthcare-dataset-stroke-data.csv",stringsAsFactors = TRUE)
+```
+### Summarize Data
+```{r sum}
+summary(df_stroke)
+glimpse(df_stroke)
+```
+
+```{r sk}
+skim(df_stroke)
+```
+### Data Summary
+* There are 5110 rows and 12 columns in the data
+* 6 Numeric and 6 Character columns
+* 1 Row of other value in gender
+* There is a value 'N/A' in bmi in 201 rows
+
+### BMI column is in character format. Converting it to numeric
+```{r}
+df_stroke$bmi<-as.numeric(df_stroke$bmi)
+```
+
+
+### Changing N/A to NA so that R can understand
+```{r}
+df_stroke$bmi[df_stroke$bmi=="N/A"]=NA
+colSums(is.na(df_stroke))
+```
+
+
+### Replacing NAs
+Since height and weight are not provided, we cant calculate bmi and replace NAs with it. In this case,the best option is to replace the NA values with the mean
+
+```{r}
+df_stroke$bmi[is.na(df_stroke$bmi)]<-mean(df_stroke$bmi)
+colSums(is.na(df_stroke))
+```
+
+### Only 1 value as other in gender. So it is better to remove it
+```{r}
+df_stroke<-df_stroke %>% 
+  filter(!gender=="Other")
+nrow(df_stroke)
+```
+
+### Converting all non-numeric variables to factors
+
+```{r}
+df_stroke$stroke<- factor(df_stroke$stroke, levels = c(0,1), labels = c("No", "Yes"))
+
+df_stroke$hypertension<-factor(df_stroke$hypertension,levels = c(0,1),labels=c("No","Yes"))
+
+df_stroke$heart_disease<- factor(df_stroke$heart_disease, levels = c(0,1), labels = c("No", "Yes"))
+```
+
+
+### Plots to Visualize
+
+```{r,ECHO=TRUE}
+p1<-ggplot(df_stroke,aes(x=gender,fill=gender))+geom_bar()+
+  geom_text(aes(label=..count..),stat = "Count", vjust= 1.5)
+p1
+p2<-ggplot(df_stroke,aes(x="",y=hypertension,fill=hypertension))+geom_bar(stat = "identity")+coord_polar("y")
+p2
+
+```
+
+
+
+```{r}
+
+```
+
+
+
+
+
